@@ -1,25 +1,98 @@
 class Node {
-	constructor(data, priority) {
-		this.data = data;
-		this.priority = priority;
+    constructor(data, priority) {
+        this.data = data;
+        this.priority = priority;
+        this.parent = null;
+        this.left = null;
+        this.right = null;
 
-	}
+    }
 
-	appendChild(node) {
+    appendChild(node) {
+        if (!this.left) {
+            this.left = node;
+            node.parent = this;
 
-	}
+            return
+        }
+        if (!this.right) {
+            this.right = node;
+            node.parent = this;
+        }
 
-	removeChild(node) {
+    }
 
-	}
+    removeChild(node) {
+        if (this.left === node) {
+            this.left = null;
+            node.parent = null;
+            return
+        }
+        if (this.right === node) {
+            this.right = null;
+            node.parent = null;
+            return
+        } else throw "Parent dont have this child!!!";
 
-	remove() {
+    }
 
-	}
+    remove() {
+        if (this.parent)
+            this.parent.removeChild(this);
 
-	swapWithParent() {
-		
-	}
+    }
+
+    swapWithParent() {
+        if (!this.parent) return;
+        let pp, pl, pr;
+        pp = this.parent.parent;
+        pl = this.parent.left;
+        pr = this.parent.right;
+
+        if (pp && this.parent === pp.left) pp.left = this;
+        if (pp && this.parent === pp.right) pp.right = this;
+        if (this.right) {
+            this.right.parent = this.parent;
+            this.parent.right = this.right
+
+        } else this.parent.right = null;
+
+        if (this.left) {
+            this.left.parent = this.parent;
+            this.parent.left = this.left;
+        } else this.parent.left = null;
+
+        this.parent.parent = this;
+
+
+        if (pl === this) {
+            this.left = this.parent;
+            if (pr) {
+                pr.parent = this;
+                this.right = pr;
+            } else this.right = null;
+        } else {
+            if (pr === this) {
+
+                this.right = this.parent;
+                pl.parent = this;
+                this.left = pl;
+            }
+        }
+
+        this.parent = pp;
+
+
+
+
+
+
+
+
+
+
+
+    }
 
 }
 
