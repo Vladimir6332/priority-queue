@@ -32,7 +32,7 @@ class Node {
             this.right = null;
             node.parent = null;
             return
-        } else throw "Parent dont have this child!!!";
+        } else throw new Error("Parent dont have this child!!!");
 
     }
 

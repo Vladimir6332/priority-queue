@@ -44,22 +44,22 @@ class MaxHeap {
             this.parentNodes.push(this.root);
             return
         }
-        if (this.counter != 1) {
-            this.parentNodes[0].left = node;
-            this.parentNodes.push(node);
-            this.counter++;
-        } else {
-            this.parentNodes[0].right = node;
-            this.parentNodes.splice(0, 1)
-            this.parentNodes.push(node);
-            this.counter = 0;
-        }
-
+        this.parentNodes[0].appendChild(node);
+        this.parentNodes.push(node);
+        if (this.parentNodes[0].right) this.parentNodes.splice(0, 1);
     }
 
     shiftNodeUp(node) {
-        while (node.parent && node.priority > node.parent.priority) {
+        if (node.parent && node.priority > node.parent.priority) {
+            if (this.parentNodes[this.parentNodes.length - 1] === node) {
+                this.parentNodes[0] = node;
+                this.parentNodes[this.parentNodes.length - 1] = node.parent;
+            } else if (this.parentNodes[0] === node) {
+                this.parentNodes[0] = node.parent;
+            }
             node.swapWithParent();
+            this.shiftNodeUp(node);
+            if (node.parent == null) this.root = node;
         }
 
     }
