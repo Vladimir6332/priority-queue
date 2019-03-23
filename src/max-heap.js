@@ -89,35 +89,39 @@ class MaxHeap {
     clear() {
         this.root = null;
         this.parentNodes = [];
+        this.sizeHeap = 0;
 
     }
 
     insertNode(node) {
-        if (this.root === null) {
+        if (this.isEmpty()) {
             this.root = node;
             node.parent = null;
-            this.parentNodes[0] = node;
+            this.parentNodes.push(node);
             this.sizeHeap++;
         } else {
             this.parentNodes[0].appendChild(node);
             this.parentNodes.push(node);
-            if (this.parentNodes[0].right != null) this.parentNodes.shift();
+            if (this.parentNodes[0].right != null && this.parentNodes[0].left != null) this.parentNodes.shift();
             this.sizeHeap++;
         }
 
     }
 
     shiftNodeUp(node) {
-        if (node.parent && node.priority > node.parent.priority) {
+        if (node.parent == null) {
+            this.root = node;
+            return
+        }
+        if (node.parent != null && node.priority > node.parent.priority) {
 
             if (this.parentNodes[this.parentNodes.length - 1] === node && this.parentNodes[0] === node.parent) {
                 this.parentNodes[0] = node;
                 this.parentNodes[this.parentNodes.length - 1] = node.parent;
             } else if (this.parentNodes[0] === node) {
                 this.parentNodes[0] = node.parent;
-            }
+            } else this.parentNodes[this.parentNodes.length - 1] = node.parent;
             node.swapWithParent();
-            if (node.parent == null) { this.root = node; }
             this.shiftNodeUp(node);
 
         }
@@ -125,15 +129,21 @@ class MaxHeap {
     }
 
     shiftNodeDown(node) {
-        let maxChild;
+
         if (node == null) return;
         if (node.left == null && node.right == null) return;
-        else {
-            if (node.right == null) {
-                maxChild = node.left;
-            } else if (node.left.priority > node.right.priority) maxChild = node.left;
-            else maxChild = node.right;
+
+        let maxChild;
+
+        if (node.right == null) {
+            maxChild = node.left;
+        } else {
+            if (node.right.priority > node.left.priority)
+                maxChild = node.right;
+            else maxChild = node.left;
         }
+
+
 
         if (maxChild.priority > node.priority) {
             let indexChild = this.parentNodes.indexOf(maxChild);
